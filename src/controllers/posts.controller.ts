@@ -11,7 +11,6 @@ export const getAllPosts = async (req: Request, res: Response) => {
         p.title,
         p.content,
         p.banner_image AS banner,
-        p.publish_at,
         p.updated_at,
         u.id AS author_id,
         u.name AS author_name
@@ -21,7 +20,14 @@ export const getAllPosts = async (req: Request, res: Response) => {
       `
         );
 
-        return res.json(posts);
+        const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+        const formatted = posts.map((p) => ({
+            ...p,
+            banner: p.banner ? `${baseUrl}/uploads/${p.banner}` : null,
+        }));
+
+        return res.json(formatted);
     } catch (error) {
         console.error("GET POSTS ERROR:", error);
         return res.status(500).json({ message: "Internal server error" });
@@ -40,7 +46,6 @@ export const getPostById = async (req: Request, res: Response) => {
         p.title,
         p.content,
         p.banner_image AS banner,
-        
         p.updated_at,
         u.id AS author_id,
         u.name AS author_name
@@ -56,7 +61,13 @@ export const getPostById = async (req: Request, res: Response) => {
             return res.status(404).json({ message: "Post not found" });
         }
 
-        return res.json(rows[0]);
+        const baseUrl = `${req.protocol}://${req.get("host")}`;
+        const post = rows[0];
+
+        return res.json({
+            ...post,
+            banner: post.banner ? `${baseUrl}/uploads/${post.banner}` : null,
+        });
     } catch (error) {
         console.error("GET POST BY ID ERROR:", error);
         return res.status(500).json({ message: "Internal server error" });
@@ -82,9 +93,9 @@ export const createPost = async (req: Request, res: Response) => {
 
         const [result] = await db.query<any>(
             `
-  INSERT INTO posts (title, content, banner_image, author_id, updated_at)
-  VALUES (?, ?, ?, ?, NOW())
-  `,
+      INSERT INTO posts (title, content, banner_image, author_id, updated_at)
+      VALUES (?, ?, ?, ?, NOW())
+      `,
             [title, content, bannerImage, userId]
         );
 
@@ -109,7 +120,6 @@ export const updatePost = async (req: Request, res: Response) => {
             return res.status(401).json({ message: "Unauthorized" });
         }
 
-        // verifica se existe e se é do autor
         const [rows] = await db.query<any[]>(
             "SELECT id, author_id FROM posts WHERE id = ? LIMIT 1",
             [id]
@@ -182,6 +192,7 @@ export const deletePost = async (req: Request, res: Response) => {
     }
 };
 
+// GET /posts/me (privado)
 export const getMyPosts = async (req: Request, res: Response) => {
     try {
         const userId = req.userId;
@@ -196,17 +207,25 @@ export const getMyPosts = async (req: Request, res: Response) => {
         p.id,
         p.title,
         p.content,
-        p.banner_image AS banner
+        p.banner_image AS banner,
+        p.updated_at
       FROM posts p
       WHERE p.author_id = ?
+      ORDER BY p.id DESC
       `,
             [userId]
         );
 
-        return res.json(posts);
+        const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+        const formatted = posts.map((p) => ({
+            ...p,
+            banner: p.banner ? `${baseUrl}/uploads/${p.banner}` : null,
+        }));
+
+        return res.json(formatted);
     } catch (error) {
         console.error("GET MY POSTS ERROR:", error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };
-

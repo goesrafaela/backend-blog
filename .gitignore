@@ -1,3 +1,5 @@
 node_modules
 .env
-upload
+uploads
+dist
+.DS_Store

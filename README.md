@@ -231,7 +231,9 @@ Resposta (exemplo):
 
 ### Listar meus posts (privado)
 
-#### GET /posts/me
+### Usuário Logado
+
+#### GET /posts/me (privado)
 
 Requer Header:
 

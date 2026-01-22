@@ -2,6 +2,7 @@ import { Router } from "express";
 import { db } from "../database/connection";
 import authRoutes from "./auth.routes";
 import postsRoutes from "./posts.routes";
+import usersRoutes from "./users.routes";
 
 
 const routes = Router();
@@ -21,5 +22,6 @@ routes.get("/health", async (req, res) => {
 // prefixo /autenticação
 routes.use("/auth", authRoutes);
 routes.use("/posts", postsRoutes);
+routes.use("/users", usersRoutes);
 
 export default routes;
