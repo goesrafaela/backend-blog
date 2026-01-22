@@ -20,11 +20,13 @@ API desenvolvida em **Node.js + Express + TypeScript** com banco **MySQL**, resp
 ## 📌 Funcionalidades
 
 ### 👤 Autenticação
+
 - Cadastro de usuário
 - Login com geração de token JWT
 - Senhas criptografadas com bcrypt
 
 ### 📰 Posts (Artigos)
+
 - Listar posts (público)
 - Visualizar post por ID (público)
 - Criar post (restrito - usuário autenticado)
@@ -56,12 +58,14 @@ dump.sql
 ## ⚙️ Configuração do projeto
 
 ### 1) Clonar o repositório
+
 ```bash
 git clone <URL_DO_REPOSITORIO>
 cd backend-blog
 ```
 
 ### 2) Instalar dependências
+
 ```bash
 npm install
 ```
@@ -73,18 +77,21 @@ npm install
 Este projeto utiliza **MySQL**.
 
 ### 1) Criar o banco a partir do dump
+
 O arquivo `dump.sql` está disponível na raiz do projeto.
 
 #### Importando via terminal:
+
 ```bash
 mysql -u root -p < dump.sql
 ```
 
 Ou, se preferir, importe usando o **MySQL Workbench**:
-- Server → Data Import  
-- Import from Self-Contained File  
-- Selecione o arquivo `dump.sql`  
-- Start Import  
+
+- Server → Data Import
+- Import from Self-Contained File
+- Selecione o arquivo `dump.sql`
+- Start Import
 
 ---
 
@@ -110,11 +117,13 @@ JWT_SECRET=supersecret123
 ## ▶️ Rodando o projeto
 
 ### Ambiente de desenvolvimento
+
 ```bash
 npm run dev
 ```
 
 O servidor ficará disponível em:
+
 ```
 http://localhost:3000
 ```
@@ -124,8 +133,11 @@ http://localhost:3000
 ## 📍 Rotas da API
 
 ### Health Check
+
 #### `GET /health`
+
 Resposta:
+
 ```json
 { "status": "ok" }
 ```
@@ -135,8 +147,11 @@ Resposta:
 ## 👤 Auth
 
 ### Cadastro
+
 #### `POST /auth/register`
+
 Body:
+
 ```json
 {
   "name": "Maria",
@@ -146,6 +161,7 @@ Body:
 ```
 
 Resposta (exemplo):
+
 ```json
 {
   "message": "User created successfully",
@@ -160,8 +176,11 @@ Resposta (exemplo):
 ---
 
 ### Login
+
 #### `POST /auth/login`
+
 Body:
+
 ```json
 {
   "email": "maria@email.com",
@@ -170,6 +189,7 @@ Body:
 ```
 
 Resposta (exemplo):
+
 ```json
 {
   "token": "SEU_TOKEN_JWT",
@@ -186,18 +206,35 @@ Resposta (exemplo):
 ## 📰 Posts
 
 ### Listar posts (público)
+
 #### `GET /posts`
 
 ---
 
 ### Buscar post por ID (público)
+
 #### `GET /posts/:id`
 
 ---
 
 ### Criar post (privado)
+
 #### `POST /posts`
+
+### Editar post (privado)
+
+#### PUT /posts/:id
+
+### Remover post (privado)
+
+#### DELETE /posts/:id
+
+### Listar meus posts (privado)
+
+#### GET /posts/me
+
 Requer Header:
+
 ```
 Authorization: Bearer SEU_TOKEN_JWT
 ```
@@ -205,6 +242,7 @@ Authorization: Bearer SEU_TOKEN_JWT
 Formato: `multipart/form-data`
 
 Campos:
+
 - `title` (texto)
 - `content` (texto)
 - `banner` (arquivo - imagem)
@@ -212,13 +250,17 @@ Campos:
 ---
 
 ### Editar post (privado)
+
 #### `PUT /posts/:id`
+
 Requer Header:
+
 ```
 Authorization: Bearer SEU_TOKEN_JWT
 ```
 
 Body:
+
 ```json
 {
   "title": "Novo título",
@@ -229,8 +271,11 @@ Body:
 ---
 
 ### Remover post (privado)
+
 #### `DELETE /posts/:id`
+
 Requer Header:
+
 ```
 Authorization: Bearer SEU_TOKEN_JWT
 ```
@@ -238,6 +283,7 @@ Authorization: Bearer SEU_TOKEN_JWT
 ---
 
 ## 🖼️ Uploads (imagens)
+
 As imagens são salvas localmente na pasta:
 
 ```
@@ -245,6 +291,7 @@ As imagens são salvas localmente na pasta:
 ```
 
 E ficam disponíveis via URL:
+
 ```
 http://localhost:3000/uploads/NOME_DO_ARQUIVO.png
 ```
@@ -252,6 +299,7 @@ http://localhost:3000/uploads/NOME_DO_ARQUIVO.png
 ---
 
 ## ✅ Observações importantes
+
 - Apenas usuários autenticados podem criar/editar/remover posts.
 - Apenas o autor do post pode editar/remover seu próprio post.
 - O banco pode ser recriado facilmente usando o arquivo `dump.sql`.
@@ -259,4 +307,5 @@ http://localhost:3000/uploads/NOME_DO_ARQUIVO.png
 ---
 
 ## 📄 Licença
+
 Este projeto foi desenvolvido para fins de avaliação técnica.

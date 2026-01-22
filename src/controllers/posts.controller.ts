@@ -17,7 +17,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
         u.name AS author_name
       FROM posts p
       INNER JOIN users u ON u.id = p.author_id
-      ORDER BY p.publish_at DESC
+      ORDER BY p.id DESC
       `
         );
 
@@ -40,7 +40,7 @@ export const getPostById = async (req: Request, res: Response) => {
         p.title,
         p.content,
         p.banner_image AS banner,
-        p.publish_at,
+        
         p.updated_at,
         u.id AS author_id,
         u.name AS author_name
@@ -181,3 +181,32 @@ export const deletePost = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+
+export const getMyPosts = async (req: Request, res: Response) => {
+    try {
+        const userId = req.userId;
+
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const [posts] = await db.query<any[]>(
+            `
+      SELECT 
+        p.id,
+        p.title,
+        p.content,
+        p.banner_image AS banner
+      FROM posts p
+      WHERE p.author_id = ?
+      `,
+            [userId]
+        );
+
+        return res.json(posts);
+    } catch (error) {
+        console.error("GET MY POSTS ERROR:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+

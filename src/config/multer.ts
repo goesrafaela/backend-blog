@@ -11,4 +11,18 @@ export const uploadConfig = multer({
             cb(null, uniqueName);
         },
     }),
+
+    fileFilter: (req, file, cb) => {
+        const allowed = ["image/jpeg", "image/png", "image/jpg"];
+
+        if (allowed.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error("Only JPG and PNG images are allowed"));
+        }
+    },
+
+    limits: {
+        fileSize: 2 * 1024 * 1024 //equivale a 2MB de tamanho
+    },
 });
