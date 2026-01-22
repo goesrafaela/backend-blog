@@ -1,20 +1,21 @@
 import { Router } from "express";
 import {
-    createPost,
-    deletePost,
+    getAllPosts,
     getPostById,
-    listPosts,
+    createPost,
     updatePost,
+    deletePost,
 } from "../controllers/posts.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { uploadConfig } from "../config/multer";
 
 const postsRoutes = Router();
 
-postsRoutes.get("/", listPosts);
+// públicas
+postsRoutes.get("/", getAllPosts);
 postsRoutes.get("/:id", getPostById);
 
-// Protected routes
+// privadas
 postsRoutes.post(
     "/",
     authMiddleware,
@@ -22,7 +23,13 @@ postsRoutes.post(
     createPost
 );
 
-postsRoutes.put("/:id", authMiddleware, updatePost);
+postsRoutes.put(
+    "/:id",
+    authMiddleware,
+    uploadConfig.single("banner"),
+    updatePost
+);
+
 postsRoutes.delete("/:id", authMiddleware, deletePost);
 
 export default postsRoutes;

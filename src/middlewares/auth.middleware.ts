@@ -2,10 +2,15 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 type JwtPayload = {
-    userId: number;
+    id: number;
+    email: string;
 };
 
-export function authMiddleware(req: Request, res: Response, next: NextFunction) {
+export const authMiddleware = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -19,10 +24,14 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
-        req.userId = decoded.userId;
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET as string
+        ) as JwtPayload;
+
+        req.userId = decoded.id;
         return next();
-    } catch {
-        return res.status(401).json({ message: "Invalid or expired token" });
+    } catch (error) {
+        return res.status(401).json({ message: "Invalid token" });
     }
-}
+};
